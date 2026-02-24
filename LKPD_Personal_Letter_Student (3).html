@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LKPD – Understanding Personal Letter | Grade 11</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #2D6A4F;
+    --primary-light: #52B788;
+    --primary-pale: #D8F3DC;
+    --accent: #F4A261;
+    --accent2: #E76F51;
+    --bg: #F8FDF9;
+    --card-bg: #ffffff;
+    --text: #1B2D2A;
+    --text-muted: #5C7B6B;
+    --border: #B7E4C7;
+    --shadow: 0 4px 24px rgba(45,106,79,0.10);
+    --radius: 18px;
+    --radius-sm: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    background: var(--primary);
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .topbar-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .topbar-meta { font-size: 0.8rem; opacity: 0.85; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .score-pill {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.95rem;
+    padding: 6px 16px;
+    border-radius: 50px;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-wrap {
+    background: #E8F5E9;
+    padding: 10px 24px 6px;
+    position: sticky;
+    top: 57px;
+    z-index: 99;
+    border-bottom: 2px solid var(--border);
+  }
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 5px;
+  }
+  .progress-bar-outer {
+    height: 10px;
+    background: var(--border);
+    border-radius: 50px;
+    overflow: hidden;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-light), var(--primary));
+    border-radius: 50px;
+    transition: width 0.6s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+  .step-dots {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .step-dot {
+    width: 28px;
+    height: 8px;
+    border-radius: 50px;
+    background: var(--border);
+    transition: background 0.3s, width 0.3s;
+    cursor: default;
+  }
+  .step-dot.done { background: var(--primary-light); }
+  .step-dot.active { background: var(--primary); width: 36px; }
+
+  /* ===== MAIN LAYOUT ===== */
+  .main { max-width: 820px; margin: 0 auto; padding: 30px 18px 60px; }
+
+  /* ===== STUDENT INFO ===== */
+  .info-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+    border: 2px solid var(--border);
+  }
+  .info-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+  .info-card .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .info-field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .info-field input {
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--bg);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .info-field input:focus { border-color: var(--primary-light); }
+  .start-btn {
+    margin-top: 20px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 13px 32px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.03em;
+  }
+  .start-btn:hover { background: var(--primary-light); transform: translateY(-2px); }
+
+  /* ===== SECTION CARDS ===== */
+  .section-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+    border: 2px solid var(--border);
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+  .section-card.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .section-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--primary-pale);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  .section-meta { flex: 1; }
+  .section-num { font-size: 0.75rem; font-weight: 800; color: var(--primary-light); text-transform: uppercase; letter-spacing: 0.1em; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--primary); }
+  .slide-sync {
+    font-size: 0.75rem;
+    background: var(--primary-pale);
+    color: var(--primary);
+    border-radius: 50px;
+    padding: 3px 12px;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+
+  /* ===== QUESTION CARDS ===== */
+  .q-card {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+  .q-label { font-size: 0.8rem; font-weight: 800; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+  .q-text { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 14px; line-height: 1.5; }
+
+  /* MC options */
+  .mc-options { display: flex; flex-direction: column; gap: 8px; }
+  .mc-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .mc-opt:hover { border-color: var(--primary-light); background: var(--primary-pale); }
+  .mc-opt.selected { border-color: var(--primary); background: var(--primary-pale); color: var(--primary); }
+  .mc-opt.correct { border-color: #52B788; background: #D8F3DC; color: #1B4332; }
+  .mc-opt.wrong { border-color: #E63946; background: #FFE8E8; color: #7B0000; }
+  .opt-letter {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .mc-opt.selected .opt-letter { background: var(--primary); color: #fff; }
+  .mc-opt.correct .opt-letter { background: #52B788; color: #fff; }
+  .mc-opt.wrong .opt-letter { background: #E63946; color: #fff; }
+
+  /* Text inputs */
+  .q-input, .q-textarea {
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: #fff;
+    transition: border-color 0.2s;
+    outline: none;
+    resize: vertical;
+  }
+  .q-input:focus, .q-textarea:focus { border-color: var(--primary-light); }
+  .q-textarea { min-height: 100px; }
+
+  /* Feedback banner */
+  .feedback-banner {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: none;
+  }
+  .feedback-banner.show { display: flex; align-items: center; gap: 8px; }
+  .feedback-banner.good { background: #D8F3DC; color: #1B4332; border: 1.5px solid #52B788; }
+  .feedback-banner.bad { background: #FFE8E8; color: #7B0000; border: 1.5px solid #E63946; }
+  .feedback-banner.info { background: var(--primary-pale); color: var(--primary); border: 1.5px solid var(--primary-light); }
+
+  /* ===== SAMPLE LETTER ===== */
+  .sample-letter {
+    background: #FFFEF5;
+    border: 2px dashed var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    font-family: Georgia, serif;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .sample-letter-header { text-align: right; margin-bottom: 16px; color: #6B6037; }
+  .letter-label {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 3px 12px;
+    border-radius: 50px;
+    letter-spacing: 0.08em;
+  }
+
+  /* Highlight task */
+  .highlight-instruction {
+    background: #FFF8E7;
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    color: #7B5800;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .highlight-wrap { line-height: 2.2; font-size: 0.95rem; }
+  .highlight-btn {
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  .highlight-btn:hover { background: #FFF3CD; }
+  .highlight-btn.highlighted-present { background: #C8F7D0; font-weight: 700; }
+  .highlight-btn.highlighted-past { background: #C8E8FF; font-weight: 700; }
+  .highlight-btn.highlighted-feeling { background: #FFD6E8; font-weight: 700; }
+  .highlight-btn.highlighted-informal { background: #FFE0A0; font-weight: 700; }
+
+  .highlight-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 50px;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .legend-item.active-tool { border: 2px solid var(--primary); }
+  .legend-dot { width: 14px; height: 14px; border-radius: 3px; }
+  .legend-dot.present { background: #C8F7D0; }
+  .legend-dot.past { background: #C8E8FF; }
+  .legend-dot.feeling { background: #FFD6E8; }
+  .legend-dot.informal { background: #FFE0A0; }
+
+  /* ===== STRUCTURE BUILDER – TAP TO PLACE (MOBILE FRIENDLY) ===== */
+  .drag-instructions {
+    background: var(--primary-pale);
+    border-radius: var(--radius-sm);
+    padding: 13px 16px;
+    font-size: 0.88rem;
+    color: var(--primary);
+    margin-bottom: 14px;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+  .drag-container { display: flex; flex-direction: column; gap: 14px; }
+  .drag-pool {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    background: #fff;
+  }
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    background: #fff;
+  }
+  .drag-pool h4, .drop-zone h4 {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  /* Pool items */
+  .pool-item {
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 13px 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .pool-item:last-child { margin-bottom: 0; }
+  .pool-item.selected {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(45,106,79,0.3);
+    transform: scale(1.02);
+  }
+  .pool-hint { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-top: 2px; }
+  .pool-item.selected .pool-hint { color: rgba(255,255,255,0.75); }
+  /* Selected indicator bar */
+  .selected-indicator {
+    background: var(--primary);
+    color: #fff;
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+  .selected-indicator.show { display: flex; }
+  /* Drop slots */
+  .drop-slot {
+    border: 2px dashed #B7E4C7;
+    border-radius: var(--radius-sm);
+    min-height: 54px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    padding: 8px 14px;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    background: #fafffe;
+  }
+  .drop-slot:last-child { margin-bottom: 0; }
+  .drop-slot.ready { border-color: var(--primary-light); background: #F0FFF4; border-style: solid; }
+  .drop-slot.filled { border-style: solid; border-color: var(--border); }
+  .drop-slot.correct { border-color: #52B788 !important; background: #D8F3DC !important; }
+  .drop-slot.wrong   { border-color: #E63946 !important; background: #FFE8E8 !important; }
+  .slot-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--primary-pale); color: var(--primary);
+    font-size: 0.8rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.15s;
+  }
+  .drop-slot.correct .slot-num { background: #52B788; color: #fff; }
+  .drop-slot.wrong   .slot-num { background: #E63946; color: #fff; }
+  .slot-content { flex: 1; }
+  .slot-text { font-weight: 700; font-size: 0.92rem; color: var(--text); }
+  .slot-empty-label { font-size: 0.82rem; color: var(--text-muted); font-style: italic; }
+  .slot-remove-btn {
+    font-size: 1.1rem; color: var(--text-muted); padding: 4px 8px;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation; border-radius: 50%;
+    transition: background 0.15s;
+  }
+  .slot-remove-btn:active { background: #fee; }
+
+  /* ===== WRITING SECTIONS ===== */
+  .writing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .writing-field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .char-count { font-size: 0.75rem; color: var(--text-muted); text-align: right; margin-top: 3px; }
+
+  /* Checklist sidebar */
+  .full-letter-wrap { display: flex; gap: 20px; flex-wrap: wrap; }
+  .full-letter-editor { flex: 1; min-width: 280px; }
+  .full-letter-editor .q-textarea { min-height: 280px; }
+  .checklist-sidebar {
+    width: 200px;
+    background: var(--primary-pale);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    flex-shrink: 0;
+  }
+  .checklist-sidebar h4 { font-size: 0.8rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+  .check-box {
+    width: 20px; height: 20px;
+    border: 2px solid var(--primary-light);
+    border-radius: 4px;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .check-box.checked { background: var(--primary); border-color: var(--primary); }
+  .check-box.checked::after { content: '✓'; color: #fff; font-size: 0.75rem; font-weight: 900; }
+
+  /* Radio topic */
+  .topic-options { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+  .topic-opt {
+    padding: 10px 18px;
+    border: 2px solid var(--border);
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .topic-opt:hover { border-color: var(--primary-light); background: var(--primary-pale); }
+  .topic-opt.selected { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+  /* ===== SLIDER ===== */
+  .slider-group { margin-bottom: 20px; }
+  .slider-label { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .slider-row { display: flex; align-items: center; gap: 14px; }
+  .slider-row input[type=range] {
+    flex: 1;
+    accent-color: var(--primary);
+    height: 6px;
+    cursor: pointer;
+  }
+  .slider-val {
+    width: 36px; height: 36px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; flex-wrap: wrap; }
+  .btn {
+    padding: 12px 28px;
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-light); transform: translateY(-2px); }
+  .btn-secondary { background: var(--primary-pale); color: var(--primary); border: 2px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ===== BADGE POPUP ===== */
+  .badge-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    background: #fff;
+    border-radius: 24px;
+    padding: 40px 50px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: none;
+    border: 3px solid var(--primary);
+    animation: popIn 0.4s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  @keyframes popIn {
+    from { transform: translate(-50%,-50%) scale(0.7); opacity: 0; }
+    to { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+  }
+  .badge-emoji { font-size: 4rem; display: block; margin-bottom: 12px; }
+  .badge-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--primary); margin-bottom: 8px; }
+  .badge-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; }
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 999;
+    display: none;
+  }
+
+  /* ===== FINAL SCREEN ===== */
+  .final-screen {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .final-score-circle {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-family: 'Playfair Display', serif;
+    box-shadow: 0 8px 32px rgba(45,106,79,0.3);
+  }
+  .final-score-num { font-size: 2.5rem; font-weight: 900; line-height: 1; }
+  .final-score-label { font-size: 0.75rem; opacity: 0.85; }
+  .final-badge-big { font-size: 3.5rem; display: block; margin: 16px 0 8px; }
+  .final-badge-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+  .final-msg { color: var(--text-muted); margin-bottom: 28px; font-size: 0.95rem; }
+  .teacher-feedback-box {
+    background: #FFFEF5;
+    border: 2px dashed var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    text-align: left;
+    max-width: 480px;
+    margin: 0 auto 24px;
+  }
+  .teacher-feedback-box h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent2); font-weight: 800; margin-bottom: 8px; }
+  .teacher-feedback-box p { color: var(--text-muted); font-size: 0.9rem; font-style: italic; }
+
+  /* Points animation */
+  .point-anim {
+    position: fixed;
+    pointer-events: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: var(--accent);
+    z-index: 2000;
+    animation: floatUp 1.2s ease forwards;
+  }
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-80px) scale(1.2); }
+  }
+
+  /* Confetti */
+  .confetti-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1500;
+    overflow: hidden;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 10px; height: 10px;
+    opacity: 0;
+    animation: confettiFall 2.5s ease forwards;
+  }
+  @keyframes confettiFall {
+    0% { opacity: 1; transform: translateY(-20px) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+  }
+
+  /* ===== MOBILE RESPONSIVE ===== */
+  @media (max-width: 700px) {
+    /* Layout */
+    .main { padding: 16px 12px 60px; }
+    .info-grid { grid-template-columns: 1fr; }
+    .writing-grid { grid-template-columns: 1fr; }
+    .identify-grid { grid-template-columns: 1fr; }
+    .full-letter-wrap { flex-direction: column; }
+    .checklist-sidebar { width: 100%; }
+    .topic-options { flex-direction: column; }
+    .topic-opt { text-align: center; }
+
+    /* Top bar: hide subtitle on tiny screens */
+    .topbar { padding: 12px 14px; }
+    .topbar-title { font-size: 1rem; }
+    .topbar-meta { display: none; }
+
+    /* Section cards */
+    .section-card { padding: 20px 16px; }
+    .section-header { gap: 10px; }
+    .section-title { font-size: 1.1rem; }
+    .section-icon { width: 40px; height: 40px; font-size: 1.2rem; }
+
+    /* Buttons – full width on phone */
+    .btn-row { flex-direction: column-reverse; }
+    .btn { width: 100%; text-align: center; padding: 14px; font-size: 1rem; }
+
+    /* Sliders */
+    .slider-row { gap: 8px; font-size: 0.85rem; }
+
+    /* Badge popup */
+    .badge-popup { width: 88vw; padding: 28px 20px; }
+
+    /* Final screen */
+    .final-score-circle { width: 100px; height: 100px; }
+    .final-score-num { font-size: 2rem; }
+  }
+
+  /* Locked overlay on sections */
+  .section-locked {
+    position: relative;
+    display: none;
+  }
+  .section-locked.show {
+    display: block;
+  }
+  .lock-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.85);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    gap: 8px;
+  }
+  .lock-icon { font-size: 2rem; }
+  .lock-text { font-size: 0.9rem; color: var(--text-muted); font-weight: 700; }
+
+  /* Dropdown select */
+  .q-select {
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+    cursor: pointer;
+  }
+  .q-select:focus { border-color: var(--primary-light); }
+
+  /* Identify boxes */
+  .identify-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .identify-box label { display: block; font-size: 0.78rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+
+  /* Point badge inline */
+  .pts-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 9px;
+    border-radius: 50px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div>
+    <div class="topbar-title">📬 LKPD – Understanding Personal Letter</div>
+    <div class="topbar-meta">Grade 11 English | Interactive Learning Activity</div>
+  </div>
+  <div class="topbar-right">
+    <div class="score-pill">⭐ <span id="totalScore">0</span> pts</div>
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-wrap">
+  <div class="progress-labels">
+    <span>Progress</span>
+    <span id="progressPct">0%</span>
+  </div>
+  <div class="progress-bar-outer">
+    <div class="progress-bar-inner" id="progressBar"></div>
+  </div>
+  <div class="step-dots" id="stepDots"></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- STUDENT INFO -->
+  <div class="info-card" id="studentInfo">
+    <h2>Welcome! 👋</h2>
+    <p class="subtitle">Before we begin, please fill in your details below.</p>
+    <div class="info-grid">
+      <div class="info-field">
+        <label>Full Name</label>
+        <input type="text" id="studentName" placeholder="Your name...">
+      </div>
+      <div class="info-field">
+        <label>Class / Section</label>
+        <input type="text" id="studentClass" placeholder="e.g. XI IPA 2">
+      </div>
+      <div class="info-field">
+        <label>Student Number</label>
+        <input type="text" id="studentNo" placeholder="Nomor absen">
+      </div>
+      <div class="info-field">
+        <label>Date</label>
+        <input type="date" id="studentDate">
+      </div>
+    </div>
+    <button class="start-btn" onclick="startLKPD()">🚀 Start LKPD</button>
+  </div>
+
+  <!-- SECTION 1: WARM UP -->
+  <div class="section-card" id="sec1">
+    <div class="section-header">
+      <div class="section-icon">🔥</div>
+      <div class="section-meta">
+        <div class="slide-sync">📊 Slide Sync: Opening PPT</div>
+        <div class="section-num">Section 1 of 8</div>
+        <div class="section-title">Warm Up – Activate Your Knowledge</div>
+      </div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-card">
+      <div class="q-label">Question 1 <span class="pts-badge">+10 pts</span></div>
+      <div class="q-text">What is the <strong>primary purpose</strong> of a personal letter?</div>
+      <div class="mc-options" id="q1opts">
+        <div class="mc-opt" onclick="selectMC('q1',this,true,'a')">
+          <div class="opt-letter">A</div> To communicate formally with a government institution
+        </div>
+        <div class="mc-opt" onclick="selectMC('q1',this,false,'b')">
+          <div class="opt-letter">B</div> To share personal thoughts, feelings, and news with someone you know
+        </div>
+        <div class="mc-opt" onclick="selectMC('q1',this,false,'c')">
+          <div class="opt-letter">C</div> To apply for a job or scholarship
+        </div>
+        <div class="mc-opt" onclick="selectMC('q1',this,false,'d')">
+          <div class="opt-letter">D</div> To provide official business information
+        </div>
+      </div>
+      <div class="feedback-banner" id="q1fb"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card">
+      <div class="q-label">Question 2 <span class="pts-badge">+10 pts</span></div>
+      <div class="q-text">Personal letters are typically written to people we have a <strong>personal relationship</strong> with. Which of the following is the BEST example of a personal letter recipient?</div>
+      <div class="mc-options" id="q2opts">
+        <div class="mc-opt" onclick="selectMC('q2',this,false,'a')">
+          <div class="opt-letter">A</div> A bank manager you have never met
+        </div>
+        <div class="mc-opt" onclick="selectMC('q2',this,false,'b')">
+          <div class="opt-letter">B</div> A company's HR department
+        </div>
+        <div class="mc-opt" onclick="selectMC('q2',this,true,'c')">
+          <div class="opt-letter">C</div> A childhood friend who moved abroad
+        </div>
+        <div class="mc-opt" onclick="selectMC('q2',this,false,'d')">
+          <div class="opt-letter">D</div> A government official processing your documents
+        </div>
+      </div>
+      <div class="feedback-banner" id="q2fb"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card">
+      <div class="q-label">Question 3 <span class="pts-badge">+5 pts (reflection)</span></div>
+      <div class="q-text">When was the last time you wrote a personal letter or message to someone? What did you write about? <em>(Short reflection – any sincere answer earns points!)</em></div>
+      <textarea class="q-textarea" id="q3ans" placeholder="Share your experience here..." rows="3" oninput="updateCharCount('q3ans','q3cc')"></textarea>
+      <div class="char-count" id="q3cc">0 / 200 characters</div>
+      <div class="feedback-banner" id="q3fb"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="submitSection1()">Next: Identify Context →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 2: IDENTIFY CONTEXT -->
+  <div class="section-card" id="sec2">
+    <div class="section-header">
+      <div class="section-icon">🔍</div>
+      <div class="section-meta">
+        <div class="slide-sync">📊 Slide Sync: Example Letter Slide</div>
+        <div class="section-num">Section 2 of 8</div>
+        <div class="section-title">Identify Context – Read & Analyze</div>
+      </div>
+    </div>
+
+    <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:16px;">Read the sample letter below carefully, then answer the questions.</p>
+
+    <div class="sample-letter">
+      <div class="letter-label">📝 SAMPLE LETTER</div>
+      <div class="sample-letter-header">
+        Jl. Melati No. 12, Bandung<br>
+        15 October 2024
+      </div>
+      <p>Dear Sarah,</p><br>
+      <p>How are you doing? I hope you and your family are all in good health. I've been thinking about you a lot lately, especially since we haven't talked in ages!</p><br>
+      <p>I'm writing to share some exciting news — I got accepted into the university I've been dreaming of! I still can't believe it. It's been a rollercoaster of emotions, from panic during the entrance exams to pure joy when I saw the results. I really wish you were here to celebrate with me.</p><br>
+      <p>By the way, do you remember our old plan to travel to Lombok together? I think we should finally make it happen next year. Let me know what you think!</p><br>
+      <p>I miss you so much and I really hope we can meet up soon. Please write back when you get the chance — I'd love to hear how things are going for you.</p><br>
+      <p>Lots of love,<br>Dina</p>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Task 1 – Identify Sender & Receiver <span class="pts-badge">+10 pts</span></div>
+      <div class="identify-grid">
+        <div>
+          <label>Who is the SENDER of this letter?</label>
+          <input class="q-input" id="t2sender" placeholder="Name of sender...">
+        </div>
+        <div>
+          <label>Who is the RECEIVER of this letter?</label>
+          <input class="q-input" id="t2receiver" placeholder="Name of receiver...">
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Task 2 – Relationship Type <span class="pts-badge">+10 pts</span></div>
+      <div class="q-text">What is the relationship between the sender and receiver?</div>
+      <select class="q-select" id="t2relation">
+        <option value="">-- Choose relationship type --</option>
+        <option value="friends">Close Friends</option>
+        <option value="family">Family Members</option>
+        <option value="teacher-student">Teacher – Student</option>
+        <option value="colleagues">Colleagues / Coworkers</option>
+        <option value="strangers">Strangers</option>
+      </select>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Task 3 – Situation Context <span class="pts-badge">+10 pts</span></div>
+      <div class="q-text">What is the <strong>main situation or purpose</strong> of this letter?</div>
+      <select class="q-select" id="t2situation">
+        <option value="">-- Choose main purpose --</option>
+        <option value="share-news">Sharing exciting personal news</option>
+        <option value="apology">Apologizing for something</option>
+        <option value="request-help">Asking for help or advice</option>
+        <option value="invitation">Inviting someone to an event</option>
+        <option value="complaint">Making a formal complaint</option>
+      </select>
+      <div class="feedback-banner" id="sec2fb" style="margin-top:14px;"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goBack(2)">← Back</button>
+      <button class="btn btn-primary" onclick="submitSection2()">Next: Structure Builder →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 3: STRUCTURE BUILDER -->
+  <div class="section-card" id="sec3">
+    <div class="section-header">
+      <div class="section-icon">🏗️</div>
+      <div class="section-meta">
+        <div class="slide-sync">📊 Slide Sync: Structure Explanation</div>
+        <div class="section-num">Section 3 of 8</div>
+        <div class="section-title">Structure Builder – Arrange the Parts</div>
+      </div>
+    </div>
+
+    <div class="drag-instructions">
+      👆 <strong>How to use:</strong> Tap a card from <em>Parts to Arrange</em> to select it (it turns green). Then tap an empty slot below to place it. Tap a filled slot to remove it back to the pool.
+    </div>
+
+    <div class="drag-container">
+      <div class="drag-pool" id="dragPool">
+        <h4>📦 Parts to Arrange – tap to select</h4>
+        <!-- filled by JS -->
+      </div>
+      <div class="drop-zone" id="dropZone">
+        <h4>📋 Order Slots – tap to place</h4>
+        <div class="selected-indicator" id="selectedIndicator">✅ Selected: <span id="selectedLabel"></span> — now tap a slot!</div>
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <div class="feedback-banner" id="sec3fb" style="margin-top:16px;"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="resetDrag()">🔄 Reset</button>
+      <button class="btn btn-secondary" onclick="goBack(3)">← Back</button>
+      <button class="btn btn-primary" onclick="submitSection3()">Check Structure ✓</button>
+    </div>
+  </div>
+
+  <!-- SECTION 4: LANGUAGE FEATURE DETECTOR -->
+  <div class="section-card" id="sec4">
+    <div class="section-header">
+      <div class="section-icon">🔬</div>
+      <div class="section-meta">
+        <div class="slide-sync">📊 Slide Sync: Language Feature Slide</div>
+        <div class="section-num">Section 4 of 8</div>
+        <div class="section-title">Language Feature Detector</div>
+      </div>
+    </div>
+
+    <div class="highlight-instruction">
+      🖊️ <strong>Instructions:</strong> Select a highlight color below, then click on words or phrases in the letter to mark them. Identify all four language features!
+    </div>
+
+    <div class="highlight-legend" id="highlightLegend">
+      <div class="legend-item active-tool" onclick="selectTool('present')" id="tool-present">
+        <div class="legend-dot present"></div> Simple Present Tense
+      </div>
+      <div class="legend-item" onclick="selectTool('past')" id="tool-past">
+        <div class="legend-dot past"></div> Past Tense
+      </div>
+      <div class="legend-item" onclick="selectTool('feeling')" id="tool-feeling">
+        <div class="legend-dot feeling"></div> Expression of Feeling
+      </div>
+      <div class="legend-item" onclick="selectTool('informal')" id="tool-informal">
+        <div class="legend-dot informal"></div> Informal Language
+      </div>
+    </div>
+
+    <div class="sample-letter">
+      <div class="letter-label">🔍 ANALYZE THIS LETTER</div>
+      <div class="highlight-wrap" id="highlightableText"></div>
+    </div>
+
+    <div class="q-card" style="margin-top:16px;">
+      <div class="q-label">Reflection <span class="pts-badge">+10 pts</span></div>
+      <div class="q-text">Why do personal letters typically use <strong>informal language</strong> and <strong>expressions of feeling</strong>? Explain in 2–3 sentences.</div>
+      <textarea class="q-textarea" id="sec4reflect" placeholder="Write your explanation here..." rows="3" oninput="updateCharCount('sec4reflect','sec4cc')"></textarea>
+      <div class="char-count" id="sec4cc">0 / 300 characters</div>
+    </div>
+
+    <div class="feedback-banner" id="sec4fb"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goBack(4)">← Back</button>
+      <button class="btn btn-primary" onclick="submitSection4()">Next: Micro Writing →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 5: MICRO WRITING PRACTICE -->
+  <div class="section-card" id="sec5">
+    <div class="section-header">
+      <div class="section-icon">✍️</div>
+      <div class="section-meta">
+        <div class="slide-sync">📊 Slide Sync: Writing Tips</div>
+        <div class="section-num">Section 5 of 8</div>
+        <div class="section-title">Micro Writing Practice</div>
+      </div>
+    </div>
+
+    <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:20px;">Practice writing each <strong>part</strong> of a personal letter before writing the full version. Focus on tone and clarity!</p>
+
+    <div class="writing-grid">
+      <div class="writing-field">
+        <label>1. Greeting Line <span class="pts-badge">+5 pts</span></label>
+        <input class="q-input" id="w1greeting" placeholder="e.g., Dear Rafi,  /  My dear friend Ayu," oninput="autoCheck('w1greeting','w1fb','greeting')">
+        <div class="feedback-banner" id="w1fb"></div>
+      </div>
+      <div class="writing-field">
+        <label>2. Opening Paragraph <span class="pts-badge">+5 pts</span></label>
+        <textarea class="q-textarea" id="w2opening" placeholder="Start with a friendly remark, ask how they are, mention last contact..." rows="3" oninput="autoCheck('w2opening','w2fb','opening')"></textarea>
+        <div class="feedback-banner" id="w2fb"></div>
+      </div>
+      <div class="writing-field">
+        <label>3. Body Paragraph <span class="pts-badge">+5 pts</span></label>
+        <textarea class="q-textarea" id="w3body" placeholder="Share your main news, feelings, or story..." rows="3" oninput="autoCheck('w3body','w3fb','body')"></textarea>
+        <div class="feedback-banner" id="w3fb"></div>
+      </div>
+      <div class="writing-field">
+        <label>4. Closing Sentence <span class="pts-badge">+5 pts</span></label>
+        <input class="q-input" id="w4closing" placeholder="e.g., Warmly, / Yours truly, / With love," oninput="autoCheck('w4closing','w4fb','closing')">
+        <div class="feedback-banner" id="w4fb"></div>
+      </div>
+    </div>
+
+    <div class="q-card" style="margin-top:8px;">
+      <div class="q-label">📝 Writing Tips Reminder</div>
+      <ul style="font-size:0.88rem;color:var(--text-muted);padding-left:18px;line-height:2;">
+        <li>Use <strong>informal, friendly tone</strong> — write like you're talking to a friend</li>
+        <li>Show <strong>emotions</strong> — don't be afraid to say how you feel</li>
+        <li>Use <strong>simple present</strong> for current situations and <strong>past tense</strong> for past events</li>
+        <li>Keep sentences <strong>natural and flowing</strong></li>
+      </ul>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goBack(5)">← Back</button>
+      <button class="btn btn-primary" onclick="submitSection5()">Next: Write Full Letter →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 6: FULL LETTER WRITING -->
+  <div class="section-card" id="sec6">
+    <div class="section-header">
+      <div class="section-icon">📝</div>
+      <div class="section-meta">
+        <div class="slide-sync">📊 Slide Sync: Final Writing Slide</div>
+        <div class="section-num">Section 6 of 8</div>
+        <div class="section-title">Full Letter Writing – Your Best Work!</div>
+      </div>
+    </div>
+
+    <div class="q-card" style="margin-bottom:18px;">
+      <div class="q-label">Choose Your Letter Recipient <span class="pts-badge">Step 1</span></div>
+      <div class="q-text">Who will you write your personal letter to?</div>
+      <div class="topic-options">
+        <div class="topic-opt" onclick="selectTopic(this,'Best Friend')">👫 Best Friend</div>
+        <div class="topic-opt" onclick="selectTopic(this,'Future Self')">🔮 Future Self</div>
+        <div class="topic-opt" onclick="selectTopic(this,'Favorite Teacher')">👨‍🏫 Favorite Teacher</div>
+        <div class="topic-opt" onclick="selectTopic(this,'Family Member')">👨‍👩‍👧 Family Member</div>
+      </div>
+      <div class="feedback-banner info show" id="topicHint">
+        💡 Choose a recipient, then write your full letter below. Use everything you've learned!
+      </div>
+    </div>
+
+    <div class="full-letter-wrap">
+      <div class="full-letter-editor">
+        <label style="display:block;font-size:0.8rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Your Complete Personal Letter <span class="pts-badge">+30 pts</span></label>
+        <textarea class="q-textarea" id="fullLetter" rows="18" placeholder="Start writing your complete personal letter here...
+
+Include all parts:
+• Date (top right)
+• Greeting (Dear...)
+• Opening paragraph
+• Body paragraphs
+• Closing sentence
+• Signature
+
+Write with heart! ❤️" oninput="updateLetterChecklist(); updateCharCount('fullLetter','fullLetterCC')"></textarea>
+        <div class="char-count" id="fullLetterCC">0 characters</div>
+      </div>
+      <div class="checklist-sidebar">
+        <h4>✅ Checklist</h4>
+        <div class="check-item" id="chk-date">
+          <div class="check-box" id="cb-date"></div>
+          📅 Date
+        </div>
+        <div class="check-item" id="chk-greeting">
+          <div class="check-box" id="cb-greeting"></div>
+          👋 Greeting
+        </div>
+        <div class="check-item" id="chk-opening">
+          <div class="check-box" id="cb-opening"></div>
+          📖 Opening
+        </div>
+        <div class="check-item" id="chk-body">
+          <div class="check-box" id="cb-body"></div>
+          💬 Body
+        </div>
+        <div class="check-item" id="chk-closing">
+          <div class="check-box" id="cb-closing"></div>
+          🎗️ Closing
+        </div>
+        <div class="check-item" id="chk-signature">
+          <div class="check-box" id="cb-signature"></div>
+          ✍️ Signature
+        </div>
+        <div style="margin-top:16px;padding-top:12px;border-top:1.5px dashed var(--border);">
+          <div style="font-size:0.75rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Tips</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.7;">
+            ✔ Friendly tone<br>
+            ✔ Show feelings<br>
+            ✔ Use proper tense<br>
+            ✔ At least 150 words
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goBack(6)">← Back</button>
+      <button class="btn btn-primary" onclick="submitSection6()">Submit Letter →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 7: REFLECTION -->
+  <div class="section-card" id="sec7">
+    <div class="section-header">
+      <div class="section-icon">🪞</div>
+      <div class="section-meta">
+        <div class="slide-sync">📊 Slide Sync: Reflection Slide</div>
+        <div class="section-num">Section 7 of 8</div>
+        <div class="section-title">Self-Reflection & Assessment</div>
+      </div>
+    </div>
+
+    <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:24px;">Be honest with yourself! How do you feel about today's lesson?</p>
+
+    <div class="slider-group">
+      <div class="slider-label">1. I understand the structure of a personal letter</div>
+      <div class="slider-row">
+        <span>😕 1</span>
+        <input type="range" min="1" max="5" value="3" id="sl1" oninput="document.getElementById('sv1').textContent=this.value">
+        <span>😊 5</span>
+        <div class="slider-val" id="sv1">3</div>
+      </div>
+    </div>
+    <div class="slider-group">
+      <div class="slider-label">2. I can write a personal letter independently</div>
+      <div class="slider-row">
+        <span>😕 1</span>
+        <input type="range" min="1" max="5" value="3" id="sl2" oninput="document.getElementById('sv2').textContent=this.value">
+        <span>😊 5</span>
+        <div class="slider-val" id="sv2">3</div>
+      </div>
+    </div>
+    <div class="slider-group">
+      <div class="slider-label">3. I enjoyed and found this lesson engaging</div>
+      <div class="slider-row">
+        <span>😕 1</span>
+        <input type="range" min="1" max="5" value="3" id="sl3" oninput="document.getElementById('sv3').textContent=this.value">
+        <span>😊 5</span>
+        <div class="slider-val" id="sv3">3</div>
+      </div>
+    </div>
+
+    <div class="q-card" style="margin-top:20px;">
+      <div class="q-label">What was the most valuable thing you learned today?</div>
+      <textarea class="q-textarea" id="reflection" placeholder="Write your reflection here..." rows="3" oninput="updateCharCount('reflection','reflCC')"></textarea>
+      <div class="char-count" id="reflCC">0 characters</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goBack(7)">← Back</button>
+      <button class="btn btn-primary" onclick="submitSection7()">See My Results 🎉</button>
+    </div>
+  </div>
+
+  <!-- SECTION 8: FINAL SCREEN -->
+  <div class="section-card" id="sec8">
+    <div class="final-screen">
+      <div class="final-score-circle">
+        <div class="final-score-num" id="finalScoreNum">0</div>
+        <div class="final-score-label">POINTS</div>
+      </div>
+      <div class="final-badge-big" id="finalBadgeEmoji">🏅</div>
+      <div class="final-badge-name" id="finalBadgeName">Letter Learner</div>
+      <div class="final-msg" id="finalMsg">Great job completing the LKPD!</div>
+
+      <div class="teacher-feedback-box">
+        <h4>👩‍🏫 Teacher Feedback</h4>
+        <p>Your teacher will review your work and provide written feedback here. Well done for completing all sections!</p>
+      </div>
+
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="downloadTXT()">📥 Download My Results (.txt)</button>
+        <button class="btn btn-secondary" onclick="copyResults()">📋 Copy to Clipboard</button>
+      </div>
+
+      <div style="margin-top:28px;padding:20px;background:var(--primary-pale);border-radius:var(--radius-sm);">
+        <div style="font-size:0.8rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Your Answer Summary</div>
+        <div id="answerSummary" style="font-size:0.85rem;color:var(--text-muted);text-align:left;line-height:2;"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- BADGE POPUP -->
+<div class="overlay" id="overlay" onclick="closeBadge()"></div>
+<div class="badge-popup" id="badgePopup">
+  <span class="badge-emoji" id="badgeEmoji">🏅</span>
+  <div class="badge-title" id="badgeTitle">Badge Earned!</div>
+  <div class="badge-desc" id="badgeDesc">Great work!</div>
+  <button class="btn btn-primary" onclick="closeBadge()">Continue →</button>
+</div>
+
+<!-- CONFETTI CONTAINER -->
+<div class="confetti-container" id="confetti"></div>
+
+<script>
+// ===========================
+// STATE
+// ===========================
+let totalScore = 0;
+let currentSection = 0;
+let totalSections = 8;
+let completedSections = [];
+let studentData = {};
+let highlightTool = 'present';
+let selectedTopic = '';
+let dragOrder = [];
+
+const sectionNames = [
+  'Warm Up',
+  'Identify Context',
+  'Structure Builder',
+  'Language Features',
+  'Micro Writing',
+  'Full Letter',
+  'Reflection',
+  'Results'
+];
+
+const correctStructure = ['Date','Greeting','Opening Paragraph','Body Paragraph(s)','Closing Statement','Signature'];
+
+// ===========================
+// INIT
+// ===========================
+document.getElementById('studentDate').value = new Date().toISOString().split('T')[0];
+buildStepDots();
+buildHighlightText();
+
+function buildStepDots() {
+  const d = document.getElementById('stepDots');
+  d.innerHTML = '';
+  for(let i=0;i<totalSections;i++){
+    const dot = document.createElement('div');
+    dot.className = 'step-dot';
+    dot.id = 'dot'+i;
+    d.appendChild(dot);
+  }
+}
+
+function updateProgress() {
+  const pct = Math.round((completedSections.length / totalSections) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+  for(let i=0;i<totalSections;i++){
+    const dot = document.getElementById('dot'+i);
+    dot.className = 'step-dot';
+    if(completedSections.includes(i)) dot.classList.add('done');
+    if(i === currentSection-1) dot.classList.add('active');
+  }
+}
+
+function updateScore(pts) {
+  totalScore += pts;
+  document.getElementById('totalScore').textContent = totalScore;
+  // animate
+  if(pts > 0) showPointAnim('+' + pts + ' pts');
+}
+
+function showSection(num) {
+  // hide all
+  document.querySelectorAll('.section-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('studentInfo').style.display = 'none';
+  const s = document.getElementById('sec'+num);
+  if(s){ s.classList.add('active'); currentSection = num; }
+  // Build section 3 fresh every time it's shown
+  if(num === 3) buildDragDrop();
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===========================
+// START
+// ===========================
+function startLKPD() {
+  const name = document.getElementById('studentName').value.trim();
+  const cls = document.getElementById('studentClass').value.trim();
+  if(!name || !cls){ alert('Please fill in your name and class first!'); return; }
+  studentData = {
+    name, cls,
+    studentNo: document.getElementById('studentNo').value,
+    date: document.getElementById('studentDate').value
+  };
+  document.getElementById('studentInfo').style.display = 'none';
+  showSection(1);
+  showBadge('🌟','Letter Starter','You started your LKPD journey! Let\'s go!');
+}
+
+// ===========================
+// SECTION 1
+// ===========================
+let q1done=false, q2done=false;
+
+function selectMC(qid, el, isCorrect, letter) {
+  const opts = document.getElementById(qid+'opts').querySelectorAll('.mc-opt');
+  opts.forEach(o => { o.classList.remove('selected','correct','wrong'); });
+  
+  // reveal correct
+  opts.forEach(o => {
+    const l = o.querySelector('.opt-letter').textContent.toLowerCase();
+    if(isCorrect && l === letter) o.classList.add('correct');
+    else if(!isCorrect && l === letter) o.classList.add('wrong');
+  });
+
+  // mark correct answer
+  if(qid==='q1'){
+    opts[1].classList.add('correct'); // B is correct
+    if(!q1done){
+      if(letter==='b'){ updateScore(10); showFeedback('q1fb','good','✅ Correct! Personal letters are for sharing thoughts and feelings with people we know.'); }
+      else { showFeedback('q1fb','bad','❌ Not quite. Personal letters are mainly for sharing personal thoughts, feelings, and news. The correct answer is B.'); }
+      q1done=true;
+    }
+  }
+  if(qid==='q2'){
+    opts[2].classList.add('correct'); // C is correct
+    if(!q2done){
+      if(letter==='c'){ updateScore(10); showFeedback('q2fb','good','✅ Correct! A childhood friend is a personal relationship — perfect for a personal letter!'); }
+      else { showFeedback('q2fb','bad','❌ Not quite. We write personal letters to people we know personally. A childhood friend (C) is the best answer.'); }
+      q2done=true;
+    }
+  }
+}
+
+function submitSection1() {
+  const q3 = document.getElementById('q3ans').value.trim();
+  if(q3.length < 20){ showFeedback('q3fb','bad','✏️ Please share a bit more in your reflection (at least 20 characters).'); return; }
+  if(q3.length > 0 && !completedSections.includes(0)){
+    updateScore(5);
+    showFeedback('q3fb','good','✅ Thanks for sharing! +5 pts for your reflection!');
+  }
+  if(!completedSections.includes(0)){ completedSections.push(0); updateProgress(); }
+  setTimeout(()=>showSection(2), 600);
+}
+
+// ===========================
+// SECTION 2
+// ===========================
+function submitSection2() {
+  const sender = document.getElementById('t2sender').value.trim().toLowerCase();
+  const receiver = document.getElementById('t2receiver').value.trim().toLowerCase();
+  const relation = document.getElementById('t2relation').value;
+  const situation = document.getElementById('t2situation').value;
+
+  if(!sender||!receiver||!relation||!situation){
+    showFeedback('sec2fb','bad','⚠️ Please complete all four tasks before continuing.');
+    return;
+  }
+
+  let pts = 0;
+  let feedback = '';
+  if(sender.includes('dina')) pts+=5;
+  if(receiver.includes('sarah')) pts+=5;
+  if(relation==='friends') pts+=5; else feedback+=' Tip: The relationship between Dina and Sarah appears to be close friends.';
+  if(situation==='share-news') pts+=5; else feedback+=' Tip: The main purpose is to share exciting personal news!';
+
+  if(!completedSections.includes(1)){
+    updateScore(pts);
+    completedSections.push(1);
+    updateProgress();
+  }
+  showFeedback('sec2fb','good','✅ Great analysis! Moving to the next section...'+feedback);
+  setTimeout(()=>showSection(3), 800);
+}
+
+// ===========================
+// SECTION 3 – TAP-TO-PLACE
+// ===========================
+const structureParts = [
+  { label: 'Date',              hint: 'e.g. 15 October 2024' },
+  { label: 'Greeting',         hint: 'e.g. Dear Sarah,' },
+  { label: 'Opening Paragraph',hint: 'Friendly intro – how are you?' },
+  { label: 'Body Paragraph(s)',hint: 'Main news / feelings' },
+  { label: 'Closing Statement',hint: 'e.g. Miss you lots,' },
+  { label: 'Signature',        hint: 'e.g. Love, Dina' },
+];
+
+// Which pool card is currently tapped/selected
+let _selectedPoolLabel = null;
+
+function buildDragDrop() {
+  const pool = document.getElementById('dragPool');
+  const zone = document.getElementById('dropZone');
+  _selectedPoolLabel = null;
+
+  // ── Pool ────────────────────────────────────────────────────────────────
+  pool.innerHTML = '<h4>📦 Parts to Arrange – tap to select</h4>';
+  const shuffled = [...structureParts].sort(() => Math.random() - 0.5);
+
+  shuffled.forEach(part => {
+    const el = document.createElement('div');
+    el.className = 'pool-item';
+    el.dataset.label = part.label;
+    el.innerHTML =
+      '<span>📄</span>' +
+      '<span>' + part.label +
+        '<span class="pool-hint">' + part.hint + '</span>' +
+      '</span>';
+
+    el.addEventListener('click', () => {
+      // Deselect if already selected
+      if (_selectedPoolLabel === part.label) {
+        _selectedPoolLabel = null;
+        el.classList.remove('selected');
+        updateIndicator();
+        return;
+      }
+      // Deselect any other selected pool item
+      pool.querySelectorAll('.pool-item').forEach(p => p.classList.remove('selected'));
+      _selectedPoolLabel = part.label;
+      el.classList.add('selected');
+      updateIndicator();
+      // Highlight empty slots as "ready"
+      zone.querySelectorAll('.drop-slot').forEach(s => {
+        if (!s.dataset.label) s.classList.add('ready');
+      });
+    });
+
+    pool.appendChild(el);
+  });
+
+  // ── Slots ────────────────────────────────────────────────────────────────
+  // Keep header + indicator, rebuild only slots
+  const existingSlots = zone.querySelectorAll('.drop-slot');
+  existingSlots.forEach(s => s.remove());
+
+  for (let i = 0; i < 6; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'drop-slot';
+    slot.dataset.index = i;
+    renderSlotEmpty(slot, i);
+
+    slot.addEventListener('click', () => {
+      if (slot.dataset.label) {
+        // Slot is filled – return item to pool
+        returnLabelToPool(slot.dataset.label);
+        delete slot.dataset.label;
+        slot.classList.remove('filled','correct','wrong','ready');
+        renderSlotEmpty(slot, i);
+        return;
+      }
+      // Slot is empty – place selected item if any
+      if (!_selectedPoolLabel) return;
+      const label = _selectedPoolLabel;
+      // Remove from pool
+      removeLabelFromPool(label);
+      _selectedPoolLabel = null;
+      updateIndicator();
+      // Clear ready highlight on all slots
+      zone.querySelectorAll('.drop-slot').forEach(s => s.classList.remove('ready'));
+      // Fill this slot
+      slot.dataset.label = label;
+      slot.classList.add('filled');
+      renderSlotFilled(slot, i, label);
+    });
+
+    zone.appendChild(slot);
+  }
+}
+
+function renderSlotEmpty(slot, idx) {
+  slot.innerHTML =
+    '<div class="slot-num">' + (idx + 1) + '</div>' +
+    '<div class="slot-content"><span class="slot-empty-label">Tap a card above, then tap here</span></div>';
+}
+
+function renderSlotFilled(slot, idx, label) {
+  slot.innerHTML =
+    '<div class="slot-num">' + (idx + 1) + '</div>' +
+    '<div class="slot-content"><span class="slot-text">' + label + '</span></div>' +
+    '<span class="slot-remove-btn" title="Remove">✕</span>';
+  // Wire up the ✕ button separately (so it doesn't bubble wrong)
+  slot.querySelector('.slot-remove-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    returnLabelToPool(label);
+    delete slot.dataset.label;
+    slot.classList.remove('filled','correct','wrong','ready');
+    renderSlotEmpty(slot, idx);
+  });
+}
+
+function updateIndicator() {
+  const ind = document.getElementById('selectedIndicator');
+  const lbl = document.getElementById('selectedLabel');
+  if (!ind || !lbl) return;
+  if (_selectedPoolLabel) {
+    lbl.textContent = _selectedPoolLabel;
+    ind.classList.add('show');
+  } else {
+    ind.classList.remove('show');
+  }
+}
+
+function removeLabelFromPool(label) {
+  const pool = document.getElementById('dragPool');
+  const el = Array.from(pool.querySelectorAll('.pool-item')).find(e => e.dataset.label === label);
+  if (el) el.remove();
+}
+
+function returnLabelToPool(label) {
+  const pool = document.getElementById('dragPool');
+  // Check not already in pool
+  const exists = Array.from(pool.querySelectorAll('.pool-item')).find(e => e.dataset.label === label);
+  if (exists) return;
+  const part = structureParts.find(p => p.label === label);
+  if (!part) return;
+  const el = document.createElement('div');
+  el.className = 'pool-item';
+  el.dataset.label = label;
+  el.innerHTML =
+    '<span>📄</span>' +
+    '<span>' + label +
+      '<span class="pool-hint">' + part.hint + '</span>' +
+    '</span>';
+  el.addEventListener('click', () => {
+    if (_selectedPoolLabel === label) {
+      _selectedPoolLabel = null;
+      el.classList.remove('selected');
+      updateIndicator();
+      return;
+    }
+    pool.querySelectorAll('.pool-item').forEach(p => p.classList.remove('selected'));
+    _selectedPoolLabel = label;
+    el.classList.add('selected');
+    updateIndicator();
+    const zone = document.getElementById('dropZone');
+    zone.querySelectorAll('.drop-slot').forEach(s => {
+      if (!s.dataset.label) s.classList.add('ready');
+    });
+  });
+  pool.appendChild(el);
+}
+
+function resetDrag() {
+  _selectedPoolLabel = null;
+  buildDragDrop();
+  document.getElementById('sec3fb').className = 'feedback-banner';
+}
+
+function submitSection3() {
+  const zone  = document.getElementById('dropZone');
+  const slots = Array.from(zone.querySelectorAll('.drop-slot'));
+  const order = slots.map(s => s.dataset.label || '');
+
+  if (order.some(o => !o)) {
+    showFeedback('sec3fb', 'bad', '⚠️ Please fill ALL 6 slots first — tap a card, then tap a slot!');
+    return;
+  }
+
+  let correct = 0;
+  slots.forEach((s, i) => {
+    s.classList.remove('correct', 'wrong');
+    if (order[i] === correctStructure[i]) { s.classList.add('correct'); correct++; }
+    else s.classList.add('wrong');
+  });
+
+  if (!completedSections.includes(2)) {
+    updateScore(correct * 3);
+    completedSections.push(2);
+    updateProgress();
+  }
+
+  if (correct === 6) {
+    showFeedback('sec3fb', 'good', '🎉 Perfect! Order: Date → Greeting → Opening Paragraph → Body Paragraph(s) → Closing Statement → Signature!');
+    showConfetti();
+    setTimeout(() => showSection(4), 1400);
+  } else {
+    showFeedback('sec3fb', 'bad', '❌ Got ' + correct + '/6 correct. Red slots are wrong — tap ✕ to remove and rearrange, then check again!');
+  }
+}
+// ===========================
+// SECTION 4 – HIGHLIGHT
+// ===========================
+const letterTokens = [
+  {word:'How', type:'present'}, {word:'are', type:'present'}, {word:'you', type:''}, {word:'doing', type:'present'},{word:'?', type:''},
+  {word:"I", type:''}, {word:'hope', type:'present'}, {word:'you', type:''}, {word:'and', type:''}, {word:'your', type:''}, {word:'family', type:''}, {word:'are', type:'present'}, {word:'all', type:''}, {word:'in', type:''}, {word:'good', type:''}, {word:'health', type:''}, {word:'.', type:''},
+  {word:"I've", type:'present'}, {word:'been', type:'past'}, {word:'thinking', type:'past'}, {word:'about', type:''}, {word:'you', type:''}, {word:'a', type:''}, {word:'lot', type:''}, {word:'lately', type:''},  {word:'.', type:''},
+  {word:'I', type:''}, {word:'miss', type:'present'}, {word:'you', type:''}, {word:'so', type:''}, {word:'much', type:'feeling'}, {word:'!', type:''},
+  {word:"I'm", type:'present'}, {word:'writing', type:'present'}, {word:'to', type:''}, {word:'share', type:'present'}, {word:'some', type:''}, {word:'exciting', type:'feeling'}, {word:'news', type:''},  {word:'.', type:''},
+  {word:'I', type:''}, {word:'still', type:''}, {word:"can't", type:'informal'}, {word:'believe', type:'present'}, {word:'it', type:''}, {word:'!', type:''},
+  {word:"It's", type:'informal'}, {word:'been', type:'past'}, {word:'a', type:''}, {word:'rollercoaster', type:'informal'}, {word:'!', type:''},
+  {word:'I', type:''}, {word:'really', type:'informal'}, {word:'wish', type:'present'}, {word:'you', type:''}, {word:'were', type:'past'}, {word:'here', type:''}, {word:'.', type:''},
+  {word:'Please', type:''}, {word:'write', type:'present'}, {word:'back', type:''}, {word:'when', type:''}, {word:'you', type:''}, {word:'get', type:'present'}, {word:'the', type:''}, {word:'chance', type:''},  {word:'.', type:''},
+  {word:"I'd", type:'informal'}, {word:'love', type:'feeling'}, {word:'to', type:''}, {word:'hear', type:'present'}, {word:'how', type:''}, {word:'things', type:''}, {word:'are', type:'present'}, {word:'going', type:'present'}, {word:'.', type:''},
+];
+
+function buildHighlightText() {
+  const wrap = document.getElementById('highlightableText');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  letterTokens.forEach((token,i) => {
+    if(['.',',','!','?'].includes(token.word)){
+      wrap.appendChild(document.createTextNode(token.word + ' '));
+      return;
+    }
+    const span = document.createElement('span');
+    span.className = 'highlight-btn';
+    span.textContent = token.word;
+    span.dataset.index = i;
+    span.dataset.type = token.type;
+    span.addEventListener('click', () => {
+      const current = span.dataset.highlighted || '';
+      if(current === highlightTool){ span.className='highlight-btn'; span.dataset.highlighted=''; }
+      else { span.className='highlight-btn highlighted-'+highlightTool; span.dataset.highlighted=highlightTool; }
+    });
+    wrap.appendChild(span);
+    wrap.appendChild(document.createTextNode(' '));
+  });
+}
+
+function selectTool(tool) {
+  highlightTool = tool;
+  document.querySelectorAll('.legend-item').forEach(l=>l.classList.remove('active-tool'));
+  document.getElementById('tool-'+tool).classList.add('active-tool');
+}
+
+function submitSection4() {
+  const reflection = document.getElementById('sec4reflect').value.trim();
+  if(reflection.length < 30){ showFeedback('sec4fb','bad','✏️ Please write a bit more in your reflection (at least 30 characters).'); return; }
+  
+  // count highlights
+  let highlighted = document.querySelectorAll('.highlight-btn[data-highlighted]').length;
+  let pts = Math.min(10, highlighted * 1);
+  if(reflection.length > 30) pts += 5;
+
+  if(!completedSections.includes(3)){
+    updateScore(pts);
+    completedSections.push(3);
+    updateProgress();
+  }
+  showFeedback('sec4fb','good',`✅ Great work detecting language features! You highlighted ${highlighted} items. Moving on...`);
+  setTimeout(()=>showSection(5), 800);
+}
+
+// ===========================
+// SECTION 5 – MICRO WRITING
+// ===========================
+function autoCheck(inputId, fbId, type) {
+  const val = document.getElementById(inputId).value.trim();
+  const fb = document.getElementById(fbId);
+  if(!val){ fb.className='feedback-banner'; return; }
+  
+  const checks = {
+    greeting: () => (val.toLowerCase().includes('dear') || val.toLowerCase().includes('hi') || val.toLowerCase().includes('hello')) && val.includes(','),
+    opening: () => val.length > 30,
+    body: () => val.length > 40,
+    closing: () => val.includes(',') || val.toLowerCase().includes('love') || val.toLowerCase().includes('warmly') || val.toLowerCase().includes('yours')
+  };
+  
+  const tips = {
+    greeting: "Try starting with 'Dear [Name],' or a warm greeting with a comma.",
+    opening: "Write a friendly opening — ask how they are, mention last contact!",
+    body: "Share your main news or feelings in more detail.",
+    closing: "Try endings like 'Yours truly,' or 'Warmly,' followed by your name."
+  };
+
+  if(checks[type] && checks[type]()){
+    showFeedback(fbId,'good','✅ Looks good!');
+  } else if(val.length > 5){
+    showFeedback(fbId,'info','💡 ' + tips[type]);
+  }
+}
+
+function submitSection5() {
+  const g = document.getElementById('w1greeting').value.trim();
+  const o = document.getElementById('w2opening').value.trim();
+  const b = document.getElementById('w3body').value.trim();
+  const c = document.getElementById('w4closing').value.trim();
+  if(!g||!o||!b||!c){ alert('Please complete all four writing parts!'); return; }
+  let pts = 0;
+  if(g.length>3) pts+=5;
+  if(o.length>20) pts+=5;
+  if(b.length>30) pts+=5;
+  if(c.length>3) pts+=5;
+  if(!completedSections.includes(4)){
+    updateScore(pts);
+    completedSections.push(4);
+    updateProgress();
+  }
+  showSection(6);
+}
+
+// ===========================
+// SECTION 6 – FULL LETTER
+// ===========================
+function selectTopic(el, topic) {
+  document.querySelectorAll('.topic-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTopic = topic;
+}
+
+function updateLetterChecklist() {
+  const letter = document.getElementById('fullLetter').value;
+  const checks = {
+    'date': /\d{1,2}[\s\/\-]\w+[\s\/\-]\d{4}|\w+\s+\d{1,2},?\s+\d{4}/i,
+    'greeting': /dear\s+\w+|my\s+(dear|friend)|hello\s+\w+/i,
+    'opening': /how\s+are\s+you|hope\s+you|i\s+(am\s+writing|want|hope)|it\s+has\s+been/i,
+    'body': letter.length > 150,
+    'closing': /yours|warmly|sincerely|with\s+love|best\s+(regards|wishes)/i,
+    'signature': letter.trim().split('\n').length > 5
+  };
+  
+  ['date','greeting','opening','closing'].forEach(key => {
+    const ok = checks[key] ? checks[key].test(letter) : false;
+    setCheck(key, ok);
+  });
+  setCheck('body', letter.length > 150);
+  setCheck('signature', letter.trim().split('\n').length > 5 && letter.length > 100);
+}
+
+function setCheck(key, val) {
+  const cb = document.getElementById('cb-'+key);
+  if(!cb) return;
+  if(val){ cb.classList.add('checked'); }
+  else { cb.classList.remove('checked'); }
+}
+
+function submitSection6() {
+  const letter = document.getElementById('fullLetter').value.trim();
+  if(!selectedTopic){ alert('Please choose who you are writing to!'); return; }
+  if(letter.length < 100){ alert('Your letter is too short! Please write at least 100 characters.'); return; }
+  
+  let pts = 0;
+  if(letter.length > 150) pts += 10;
+  if(letter.length > 300) pts += 10;
+  const checks = document.querySelectorAll('.check-box.checked').length;
+  pts += checks * 1.5;
+  pts = Math.min(30, Math.round(pts));
+  
+  if(!completedSections.includes(5)){
+    updateScore(pts);
+    completedSections.push(5);
+    updateProgress();
+  }
+  showSection(7);
+}
+
+// ===========================
+// SECTION 7 – REFLECTION
+// ===========================
+function submitSection7() {
+  const refl = document.getElementById('reflection').value.trim();
+  if(!completedSections.includes(6)){
+    updateScore(5);
+    completedSections.push(6);
+    updateProgress();
+  }
+  completedSections.push(7);
+  buildFinalScreen();
+  showSection(8);
+  showConfetti();
+}
+
+// ===========================
+// SECTION 8 – FINAL
+// ===========================
+function buildFinalScreen() {
+  document.getElementById('finalScoreNum').textContent = totalScore;
+  
+  let badge, emoji, msg;
+  if(totalScore >= 80){
+    badge = 'Letter Master'; emoji = '🏆';
+    msg = 'Outstanding! You have mastered the personal letter. Your teacher will be impressed!';
+  } else if(totalScore >= 60){
+    badge = 'Letter Writer'; emoji = '🥈';
+    msg = 'Great job! You have a solid understanding of personal letters. Keep practicing!';
+  } else {
+    badge = 'Letter Learner'; emoji = '📚';
+    msg = 'Good effort! Review your notes and practice more. You\'ll get there!';
+  }
+  
+  document.getElementById('finalBadgeEmoji').textContent = emoji;
+  document.getElementById('finalBadgeName').textContent = badge;
+  document.getElementById('finalMsg').textContent = msg;
+
+  // Summary
+  const summary = document.getElementById('answerSummary');
+  summary.innerHTML = `
+    <strong>Student:</strong> ${studentData.name} | <strong>Class:</strong> ${studentData.cls}<br>
+    <strong>Date:</strong> ${studentData.date}<br>
+    <strong>Total Score:</strong> ${totalScore} pts | <strong>Badge:</strong> ${emoji} ${badge}<br>
+    <strong>Letter Recipient:</strong> ${selectedTopic || 'Not specified'}<br>
+    <strong>Reflection Score:</strong> ${document.getElementById('sl1').value}/5 (Structure) | 
+    ${document.getElementById('sl2').value}/5 (Independence) | 
+    ${document.getElementById('sl3').value}/5 (Enjoyment)<br>
+    <strong>Sections Completed:</strong> ${completedSections.length}/${totalSections}
+  `;
+}
+
+// ===========================
+// UTILITIES
+// ===========================
+function showFeedback(id, type, text) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.className = 'feedback-banner show ' + type;
+  el.innerHTML = text;
+}
+
+function updateCharCount(inputId, countId) {
+  const val = document.getElementById(inputId).value;
+  const el = document.getElementById(countId);
+  if(el) el.textContent = val.length + ' characters';
+}
+
+function goBack(fromSection) { showSection(fromSection - 1); }
+
+function showBadge(emoji, title, desc) {
+  document.getElementById('badgeEmoji').textContent = emoji;
+  document.getElementById('badgeTitle').textContent = title;
+  document.getElementById('badgeDesc').textContent = desc;
+  document.getElementById('badgePopup').style.display = 'block';
+  document.getElementById('overlay').style.display = 'block';
+}
+
+function closeBadge() {
+  document.getElementById('badgePopup').style.display = 'none';
+  document.getElementById('overlay').style.display = 'none';
+}
+
+function showPointAnim(text) {
+  const el = document.createElement('div');
+  el.className = 'point-anim';
+  el.textContent = text;
+  el.style.left = (Math.random()*60+20) + '%';
+  el.style.top = '100px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 1300);
+}
+
+function showConfetti() {
+  const container = document.getElementById('confetti');
+  const colors = ['#52B788','#F4A261','#E76F51','#2D6A4F','#74C69D','#FFD166'];
+  for(let i=0;i<50;i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random()*100+'%';
+    piece.style.top = '-10px';
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.borderRadius = Math.random()>0.5 ? '50%' : '0';
+    piece.style.width = (Math.random()*10+5)+'px';
+    piece.style.height = (Math.random()*10+5)+'px';
+    piece.style.animationDelay = Math.random()*1+'s';
+    piece.style.animationDuration = (Math.random()*1.5+1.5)+'s';
+    container.appendChild(piece);
+    setTimeout(()=>piece.remove(), 3000);
+  }
+}
+
+
+function downloadTXT() {
+  const name   = studentData.name       || 'Student';
+  const cls    = studentData.cls        || '-';
+  const no     = studentData.studentNo  || '-';
+  const date   = studentData.date       || '-';
+
+  const q3     = (document.getElementById('q3ans')?.value       || '').trim();
+  const t2s    = (document.getElementById('t2sender')?.value    || '').trim();
+  const t2r    = (document.getElementById('t2receiver')?.value  || '').trim();
+  const t2rel  = (document.getElementById('t2relation')?.value  || '').trim();
+  const t2sit  = (document.getElementById('t2situation')?.value || '').trim();
+  const w1     = (document.getElementById('w1greeting')?.value  || '').trim();
+  const w2     = (document.getElementById('w2opening')?.value   || '').trim();
+  const w3     = (document.getElementById('w3body')?.value      || '').trim();
+  const w4     = (document.getElementById('w4closing')?.value   || '').trim();
+  const letter = (document.getElementById('fullLetter')?.value  || '').trim();
+  const refl   = (document.getElementById('reflection')?.value  || '').trim();
+  const sl1    = document.getElementById('sl1')?.value || '-';
+  const sl2    = document.getElementById('sl2')?.value || '-';
+  const sl3    = document.getElementById('sl3')?.value || '-';
+  const badge  = document.getElementById('finalBadgeName')?.textContent  || '-';
+  const emoji  = document.getElementById('finalBadgeEmoji')?.textContent || '';
+
+  const D = '='.repeat(55);
+  const d = '-'.repeat(55);
+
+  const lines = [
+    D,
+    '    LKPD – UNDERSTANDING PERSONAL LETTER',
+    '         Grade XI  |  English Language',
+    D,
+    '',
+    'STUDENT INFO',
+    d,
+    'Name        : ' + name,
+    'Class       : ' + cls,
+    'Student No  : ' + no,
+    'Date        : ' + date,
+    'Total Score : ' + totalScore + ' points',
+    'Badge       : ' + emoji + ' ' + badge,
+    '',
+    D,
+    'SECTION 1 – WARM UP',
+    D,
+    'Reflection (last time you wrote a letter):',
+    q3 || '(no answer)',
+    '',
+    D,
+    'SECTION 2 – IDENTIFY CONTEXT',
+    D,
+    'Sender     : ' + (t2s  || '(blank)'),
+    'Receiver   : ' + (t2r  || '(blank)'),
+    'Relationship: ' + (t2rel || '(blank)'),
+    'Purpose    : ' + (t2sit || '(blank)'),
+    '',
+    D,
+    'SECTION 3 – STRUCTURE BUILDER',
+    D,
+    'Correct order: Date → Greeting → Opening Paragraph',
+    '               → Body Paragraph(s) → Closing Statement → Signature',
+    '',
+    D,
+    'SECTION 5 – MICRO WRITING PRACTICE',
+    D,
+    '1. Greeting line:',
+    w1 || '(blank)',
+    '',
+    '2. Opening paragraph:',
+    w2 || '(blank)',
+    '',
+    '3. Body paragraph:',
+    w3 || '(blank)',
+    '',
+    '4. Closing sentence:',
+    w4 || '(blank)',
+    '',
+    D,
+    'SECTION 6 – FULL PERSONAL LETTER',
+    'Recipient: ' + (selectedTopic || 'Not chosen'),
+    D,
+    letter || '(not written)',
+    '',
+    D,
+    'SECTION 7 – SELF-REFLECTION',
+    D,
+    'I understand personal letter structure : ' + sl1 + '/5',
+    'I can write independently              : ' + sl2 + '/5',
+    'This lesson was engaging               : ' + sl3 + '/5',
+    '',
+    'Most valuable learning:',
+    refl || '(no answer)',
+    '',
+    D,
+    'END OF LKPD RESULTS',
+    'Generated: ' + new Date().toLocaleString(),
+    D,
+  ];
+
+  const txt  = lines.join('\n');
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'LKPD_' + name.replace(/\s+/g, '_') + '_' + date + '.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function copyResults() {
+  const s = document.getElementById('answerSummary').innerText;
+  navigator.clipboard.writeText('LKPD Results\n' + s).then(()=>alert('Summary copied to clipboard!'));
+}
+
+// Auto-save to localStorage as backup
+function autoSave() {
+  const data = {
+    score: totalScore,
+    student: studentData,
+    section: currentSection,
+    q3: document.getElementById('q3ans')?.value,
+    letter: document.getElementById('fullLetter')?.value,
+    topic: selectedTopic
+  };
+  try { localStorage.setItem('lkpd_autosave', JSON.stringify(data)); } catch(e){}
+}
+setInterval(autoSave, 10000);
+</script>
+</body>
+</html>
